@@ -1,0 +1,90 @@
+syntax = "proto3";
+
+package messaging;
+
+import "google/protobuf/struct.proto";
+
+message Message {
+  string id = 1;
+  string topic = 2;
+  string type = 3;
+  string created_at = 4;
+  google.protobuf.Struct payload = 5;
+}
+
+message PublishRequest { Message message = 1; }
+message PublishResponse {
+  bool accepted = 1;
+  string message_id = 2;
+  int32 subscriber_count = 3;
+  string details = 4;
+}
+
+message SubscribeRequest {
+  string subscriber_id = 1;
+  string topic = 2;
+  string host = 3;
+  int32 port = 4;
+  repeated string accepted_types = 5;
+}
+
+message UnsubscribeRequest {
+  string subscriber_id = 1;
+  string topic = 2;
+}
+
+message OperationResponse {
+  bool success = 1;
+  string details = 2;
+}
+
+message Empty {}
+
+message SubscriberInfo {
+  string subscriber_id = 1;
+  string host = 2;
+  int32 port = 3;
+  repeated string accepted_types = 4;
+}
+
+message TopicInfo {
+  string topic = 1;
+  repeated SubscriberInfo subscribers = 2;
+}
+
+message TopicsResponse { repeated TopicInfo topics = 1; }
+
+message CountByStatus {
+  string status = 1;
+  int32 count = 2;
+}
+
+message StatsResponse {
+  repeated CountByStatus messages = 1;
+  repeated CountByStatus deliveries = 2;
+  int32 subscriptions = 3;
+}
+
+message DeliveryRequest {
+  Message message = 1;
+  string subscriber_id = 2;
+}
+
+message DeliveryAck {
+  bool success = 1;
+  string message_id = 2;
+  string subscriber_id = 3;
+  string details = 4;
+}
+
+service BrokerService {
+  rpc Publish(PublishRequest) returns (PublishResponse);
+  rpc Subscribe(SubscribeRequest) returns (OperationResponse);
+  rpc Unsubscribe(UnsubscribeRequest) returns (OperationResponse);
+  rpc ListTopics(Empty) returns (TopicsResponse);
+  rpc Stats(Empty) returns (StatsResponse);
+}
+
+service SubscriberService {
+  rpc Deliver(DeliveryRequest) returns (DeliveryAck);
+}

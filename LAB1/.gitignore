@@ -1,0 +1,10 @@
+.venv/
+__pycache__/
+*.pyc
+*.log
+Lab1.1/database/*.db
+Lab1.1/database/*.db-shm
+Lab1.1/database/*.db-wal
+lab1.2/database/*.db
+lab1.2/database/*.db-shm
+lab1.2/database/*.db-wal
