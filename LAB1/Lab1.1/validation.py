@@ -1,5 +1,3 @@
-"""Validarea semantica a cererilor protocolului."""
-
 from datetime import datetime
 from typing import Any
 
